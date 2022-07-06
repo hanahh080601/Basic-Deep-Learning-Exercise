@@ -1,5 +1,5 @@
 from config import *
-from FCL import FCL
+from models.MultiLayersNN.FCL import FCL
 
 # Multi-layers Neural Network
 class MultiLayersNeuralNetwork:
