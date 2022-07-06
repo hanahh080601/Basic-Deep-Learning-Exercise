@@ -19,7 +19,7 @@ class DataPipeline:
         get_data(self, mode='train'):
         Get necessary features from raw data.
     """
-    def __init__(self, source='dataset'):
+    def __init__(self, source='hanlhn/hanlhn/data/dataset'):
         self.source = source
 
     def read_data(self):
