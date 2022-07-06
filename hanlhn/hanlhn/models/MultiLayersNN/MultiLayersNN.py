@@ -178,4 +178,107 @@ class MultiLayersNeuralNetwork:
     def accuracy(self, labels, predicted):
         return (labels == predicted.round()).sum() * 100 / labels.shape[0]
 
+    def execute(self, X_train_val, y_train_val, X_test, y_test, loss='hinge', epochs=1000, batch_size=16):
+        """
+        Execution training, validating and testing.
+        --------------------
+        Parameters:
+            X_train_val (array):
+                Combine of training and validating features.
+            y_train_val (array):
+                Combine of training and validating targets.
+            X_test (array):
+                Testing features.
+            y_test (array):
+                Testing targets.
+            loss (str):
+                Loss function names ('hinge', 'log', 'mse'). Default: 'hinge'.
+            epochs (int):
+                Number of epochs. Default: 1000
+            batch_size (int):
+                Number of samples in one batch. Default: 16
+        """
+        if loss == 'hinge':
+            loss = hinge_loss
+        elif loss == 'log':
+            loss = log_loss
+        else:
+            loss = self.MSE
+
+        test_accuracies = []
+        test_losses = []
+        best_acc_train = 0
+        best_acc_test = 0
+        last_loss = 1000
+        patience = 10
+        trigger_times = 0
+        isStopped = False
+        w_best = None
+
+        kf = KFold(n_splits=5, random_state=42, shuffle=True)
+
+        for train_index, val_index in kf.split(X_train_val, y_train_val):
+            X_train = X_train_val[train_index]
+            y_train = y_train_val[train_index]
+
+            X_val = X_train_val[val_index]
+            y_val = y_train_val[val_index]
+                    
+            for e in range(epochs):
+                train_accuracies = []
+                train_losses = []
+                val_accuracies = []
+                val_losses = []
+
+                for batch_x, batch_y in self.get_batches(X_train, y_train, batch_size):
+                    self.train(batch_x, batch_y)
+                    train_acc = self.accuracy(y_train[:, None], self.predict(X_train))
+                    train_loss = loss(y_train, self.predict(X_train))
+                    train_accuracies.append(train_acc)
+                    train_losses.append(train_loss)
+
+                for batch_x, batch_y in self.get_batches(X_val, y_val, batch_size):
+                    val_acc = self.accuracy(y_val[:, None], self.predict(X_val))
+                    val_loss = loss(y_val, self.predict(X_val))
+                    val_accuracies.append(val_acc)
+                    val_losses.append(val_loss)
+
+                test_acc = self.accuracy(y_test[:, None], self.predict(X_test))
+                test_loss = loss(y_test, self.predict(X_test))
+                test_accuracies.append(test_acc)
+                test_losses.append(test_loss)
+                    
+                if best_acc_train < train_acc:
+                    best_acc_train = train_acc
+                if best_acc_test < test_acc:
+                    best_acc_test = test_acc
+                    
+                if e % 100 == 0:
+                    print('Epoch', e, ':')
+                    print('Training loss:', train_loss, 'Training accuracy:', train_acc)
+                    print('Validating loss:', val_loss, 'Validating accuracy:', val_acc)
+                    print('Test loss:', test_loss, 'Test accuracy:', test_acc)
+                # Early stopping
+                current_loss = val_loss
+
+                if current_loss >= last_loss:
+                    trigger_times += 1
+                    if trigger_times >= patience:
+                        '''
+                        print('Early stopping! at epoch ', e)
+                        isStopped = True
+                        break  
+                        '''
+                        self.lr = float(self.lr * 0.2)
+
+                else:
+                    trigger_times = 0
+                    last_loss = current_loss
+                    if not isStopped:
+                        w_best = self.layers
+                        #print('Validation loss {:.6f}.  Saving weights ...'.format(current_loss))
+
+        print("Best accuracy on training set: ", best_acc_train)
+        print("Best accuracy on testing set: ", best_acc_test)
+        return w_best
     
