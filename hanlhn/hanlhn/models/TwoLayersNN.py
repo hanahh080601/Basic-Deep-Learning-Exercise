@@ -71,11 +71,6 @@ class TwoLayerNeuralNetwork(object):
         eps = 1e-10
         yhat = np.clip(self.Yhat, eps, 1-eps)
         return -np.nansum(self.T * np.log(self.Yhat))
-    """
-    def accuracy(self):
-        # check the prediction accuracy for a current iteration
-        return sum(pd.DataFrame(self.Yhat).idxmax(axis=1) == self.Y) / self.N
-    """
 
     def accuracy(self, pred, truth):
         return sum(pd.DataFrame(pred).idxmax(axis=1) == truth) / len(truth)
@@ -127,6 +122,11 @@ class TwoLayerNeuralNetwork(object):
         self.Z_1 = np.insert(self.H, 0, 1, axis=1)  # add column of 1's for bias
         self.A_2 = np.dot(self.Z_1, self.best_W2)
         self.Yhat = self.softmax(self.A_2)
-        return self
+        return self.Yhat
+
+    def execute(self, X_test, y_test):
+        y_pred = self.predict(X_test)
+        acc = self.accuracy(y_pred, y_test)
+        print("Accuracy on test set: ", acc)
 
     

@@ -12,9 +12,7 @@ if __name__ == "__main__":
     ann = TwoLayerNeuralNetwork(data_matrix=X_train_val, target_variable=y_train_val,
                         hidden=8, iteration_limit=2e3, learning_rate=0.0001, init='none')  # create ANN
     ann.train()
-    y_pred = ann.predict(X_test).Yhat
-    acc = ann.accuracy(y_pred, y_test)
-    print("Accuracy on test set: ", acc)
+    ann.execute(X_test, y_test)
 
 
 
