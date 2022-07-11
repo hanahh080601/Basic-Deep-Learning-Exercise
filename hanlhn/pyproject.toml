@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "hanlhn"
+version = "0.1.0"
+description = ""
+authors = ["hanahh080601 <hanlehngoc080601@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sklearn = "^0.0"
+pandas = "^1.4.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
