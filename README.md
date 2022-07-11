@@ -1,4 +1,36 @@
 # Basic-Deep-Learning-Exercise
+# Build a basic Neural Network using pure Numpy and Pandas.
+
+## Tasks 
+* Preprocessing data
+  * Loading data
+  * Transform data
+  * Split data
+* Building model
+  * Initialize weights & biases
+  * Activation function
+  * Loss function
+  * Feed forward
+  * Backpropagation
+  * Update weights
+* Training
+  * * Execute (train, validate, test).
+* Evaluating
+  * Accuracy: approx 80 - 83%
+
+
+## Installation
+
+Clone the repo from Github and pull the project.
+```bash
+git clone https://github.com/hanahh080601/Basic-Deep-Learning-Exercise.git
+git checkout hanlhn/multi-layers-nn
+git pull
+cd hanlhn/hanlhn
+poetry install
+poetry config virtualenvs.in-project true
+poetry update
+```
 
 # Project tree 
 .  
@@ -25,7 +57,13 @@
 │           ├── config.py      
 │           └── main.py    
 ├── .gitignore                    
-└── README.md    
+└── README.md   
+
+## Usage: 
+```bash
+cd hanlhn/hanlhn
+python main.py
+```
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
